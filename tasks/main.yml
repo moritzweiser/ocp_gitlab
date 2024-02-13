@@ -1,0 +1,27 @@
+---
+# tasks file for .
+---
+# tasks file for .
+- name: create gitlab operator namespace
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openshift-gitlab-operator
+
+- name: add gitlab operatorgroup
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: gitlab-operator
+        namespace: openshift-gitlab-operator
+      spec:
+        channel: stable
+        name: {{ gitlab_operator_version }}
+        source: operatorhubio-catalog
+        sourceNamespace: openshift-marketplace
